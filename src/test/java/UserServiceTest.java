@@ -99,6 +99,7 @@ public class UserServiceTest {
             Assert.fail("При попытке достать всех пользователей из базы данных произошло исключение\n" + e);
         }
     }
+     // DEL NOW COMMENT
 */
 
 
