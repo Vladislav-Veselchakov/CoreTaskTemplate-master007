@@ -1,12 +1,15 @@
 package jm.task.core.jdbc.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Table
+// Added by me (VL Antipov): import org.hibernate.annotations.Entity;
+@Entity
+@Table (name = "user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //можно не указывать Column name, если оно совпадает с названием столбца в таблице
+    @Column (name = "id")
     private Long id;
 
     @Column

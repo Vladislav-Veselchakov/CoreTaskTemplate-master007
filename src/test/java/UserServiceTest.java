@@ -17,8 +17,8 @@ public class UserServiceTest {
     private final String testLastName = "Ivanov";
     private final byte testAge = 5;
 
-    /** test dropUsersTable
 
+    /** test dropUsersTable
     @Test
     public void dropUsersTable() {
         try {
@@ -30,8 +30,8 @@ public class UserServiceTest {
     }
 */
 
-    /** test createUsersTable()
 
+    /** test createUsersTable()
     @Test
     public void createUsersTable() {
         try {
@@ -43,8 +43,8 @@ public class UserServiceTest {
     }
 */
 
-
     /** test saveUser()
+
     @Test
     public void saveUser() {
         try {
@@ -106,9 +106,9 @@ public class UserServiceTest {
     @Test
     public void cleanUsersTable() {
         try {
-            userService.dropUsersTable();
-            userService.createUsersTable();
-            userService.saveUser(testName, testLastName, testAge);
+//            userService.dropUsersTable();
+//            userService.createUsersTable();
+//            userService.saveUser(testName, testLastName, testAge);
             userService.cleanUsersTable();
 
             if (userService.getAllUsers().size() != 0) {
