@@ -53,7 +53,8 @@ public class Util {
                 .setProperty( "hibernate.cache.use_query_cache",    "false" )
                 .setProperty( "hibernate.dialect",                  "org.hibernate.dialect.MySQLDialect" )
                 .setProperty( "hibernate.show_sql",                 "true" )
-                .setProperty( "hibernate.current_session_context_class", "thread" )
+                .setProperty( "hibernate.current_session_context_class",    "thread" )
+                .setProperty( "hibernate.bytecode.use_reflection_optimizer", "false" )
                 .addPackage( "ru.miralab.db" )
                 .addAnnotatedClass(jm.task.core.jdbc.model.User.class)
                 ;

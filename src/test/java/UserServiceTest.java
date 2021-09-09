@@ -69,13 +69,14 @@ public class UserServiceTest {
 */
 
     /** test removeUserById()
+
     @Test
     public void removeUserById() {
         try {
-            userService.dropUsersTable();
-            userService.createUsersTable();
-            userService.saveUser(testName, testLastName, testAge);
-            userService.removeUserById(1L);
+//            userService.dropUsersTable();
+//            userService.createUsersTable();
+//            userService.saveUser(testName, testLastName, testAge);
+            userService.removeUserById(15L);
         } catch (Exception e) {
             Assert.fail("При тестировании удаления пользователя по id произошло исключение\n" + e);
         }
@@ -102,6 +103,7 @@ public class UserServiceTest {
 
 */
 
+    /** test cleanUsersTable()
 
     @Test
     public void cleanUsersTable() {
@@ -118,7 +120,6 @@ public class UserServiceTest {
             Assert.fail("При тестировании очистки таблицы пользователей произошло исключение\n" + e);
         }
     }
-    /** test cleanUsersTable()
 */
 
 }

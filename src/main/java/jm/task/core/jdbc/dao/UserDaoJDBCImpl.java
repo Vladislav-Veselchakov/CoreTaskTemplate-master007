@@ -1,6 +1,8 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
+import jm.task.core.jdbc.util.Util;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,28 +10,32 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    public UserDaoJDBCImpl() {
-
-    }
-
     public void createUsersTable() {
-        System.out.println(" -- VL we're in createUsersTable() Please, implement it ---------");
-        try (Connection connection = getMySQLConnection();
-             Statement statement = connection.createStatement()){
-
+        System.out.println("---------- vl we're in dao create table()-------");
+        Connection connection = null;
+        try {
+            connection = Util.getMySQLConnection();
+            connection.setAutoCommit(false);
             String sql = "CREATE TABLE IF NOT EXISTS User "
                     +"(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n"
                     +"name VARCHAR (50),\n"
                     +"lastName VARCHAR (70),\n"
                     +"age INT )";
 
-            // Execute statement
-            // executeUpdate(String) using for Insert, Update, Delete statement.
-            int rowCount = statement.executeUpdate(sql);
-
+            int rowCount = connection.createStatement().executeUpdate(sql);
+            connection.commit();
             System.out.println("Row Count affected = " + rowCount);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                    connection.close();
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
         }
 
     }
@@ -37,37 +43,69 @@ public class UserDaoJDBCImpl implements UserDao {
     public void dropUsersTable() {
         System.out.println("------------- VL we're in dropUsersTable() -------------------------");
 
-        try (Connection connection = getMySQLConnection();
-             Statement statement = connection.createStatement()){
+        Connection connection = null;
+        try {
+            connection = Util.getMySQLConnection();
+            connection.setAutoCommit(false);
+            String sql = "DROP TABLE IF EXISTS user";
+            int rowCount = statement.executeUpdate(sql);
+            try {
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
 
-        String sql = "DROP TABLE IF EXISTS user";
-
-        // Execute statement
-        // executeUpdate(String) using for Insert, Update, Delete statement.
-        int rowCount = statement.executeUpdate(sql);
-
-        System.out.println("Row Count affected = " + rowCount);
+            System.out.println("Row Count affected = " + rowCount);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                    connection.close();
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
         }
+
 
     }
 
     public void saveUser(String name, String lastName, byte age) {
         System.out.println(" ----------------------- VL we're in saveUser ---------");
-        try (Connection connection = getMySQLConnection();
-            Statement statement = connection.createStatement()) {
+        String sql = "INSERT INTO user (name, lastname, age) VALUES (?, ?, ?)";
+        Connection connection = null;
+        try {
+            connection = Util.getMySQLConnection();
 
-            String sql = String.format("INSERT INTO user (name, lastname, age) VALUES (\"%s\", \"%s\", %d )", name, lastName, age);
-
-            // Execute statement
-            // executeUpdate(String) using for Insert, Update, Delete statement.
-            int rowCount = statement.executeUpdate(sql);
+            connection.setAutoCommit(false);
+            pstatement.setString(1, name);
+            pstatement.setString(2, lastName);
+            pstatement.setByte(3, age);
+            int rowCount = pstatement.executeUpdate(sql);
+            try {
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
 
             System.out.println("Row Count affected = " + rowCount);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                    connection.close();
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
         }
+
 
     }
 
@@ -75,16 +113,36 @@ public class UserDaoJDBCImpl implements UserDao {
         System.out.println(" ------------------VL we ARE in removeUserById() ---------");
 
         String sql = "DELETE FROM user WHERE id = ?";
-        try (Connection connection = getMySQLConnection();
-             PreparedStatement pstatement = connection.prepareStatement(sql)) {
+        Connection connection = null;
+        try {
+            connection = Util.getMySQLConnection();
 
+            connection.setAutoCommit(false);
             pstatement.setLong(1, id);
             int rowCount = pstatement.executeUpdate();
+
+            try {
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
+
             System.out.println("Row Count affected = " + rowCount);
 
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                    connection.close();
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
         }
+
 
     }
 
@@ -92,15 +150,20 @@ public class UserDaoJDBCImpl implements UserDao {
         System.out.println(" ----------------------- VL we ARE in getAllUsers() ------------");
         List<User> lstUsers = new ArrayList<>();
 
-        try (Connection connection = getMySQLConnection();
-             Statement statement = connection.createStatement()) {
+        Connection connection = null;
+        try {
+            connection = Util.getMySQLConnection();
 
+            connection.setAutoCommit(false);
             String sql = "Select id, name, lastName, age from user";
-
-            // Execute statement
-            // executeUpdate(String) using for Insert, Update, Delete statement.
             ResultSet rs = statement.executeQuery(sql);
             int rowCount = rs.getFetchSize();
+            try {
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
 
             while (rs.next()) {
                 User lvUser = new User(rs.getString("name"), rs.getString("lastName"), rs.getByte("age"));
@@ -114,7 +177,17 @@ public class UserDaoJDBCImpl implements UserDao {
             System.out.println("Row Count affected = " + rowCount);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                    connection.close();
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
         }
+
 
         return lstUsers;
 
@@ -122,41 +195,35 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         System.out.println(" ------------------VL WE ARE in cleanUsersTable() ---------");
-        try (Connection connection = getMySQLConnection();
-             Statement statement = connection.createStatement()) {
+        Connection connection = null;
+        try {
+            connection = Util.getMySQLConnection();
 
+            connection.setAutoCommit(false);
             String sql = "DELETE FROM user ";
-
-            // Execute statement
-            // executeUpdate(String) using for Insert, Update, Delete statement.
             int rowCount = statement.executeUpdate(sql);
+            try {
+                connection.commit();
+            } catch (Exception e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
 
             System.out.println("Row Count affected = " + rowCount);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (connection != null) {
+                    connection.rollback();
+                    connection.close();
+                }
+            } catch (Exception e) {
+                // do nothing
+            }
         }
 
-    }
 
-    public Connection getMySQLConnection() throws SQLException, ClassNotFoundException {
-        String hostName = "localhost";
-
-        String dbName = "testbase";
-        String userName = "Vladislav";
-        String password = "111122223333!";
-        return getMySQLConnection(hostName, dbName, userName, password);
-    }
-
-    public Connection getMySQLConnection(String hostName, String dbName, String userName, String password) throws SQLException, ClassNotFoundException {
-        // Declare the class Driver for MySQL DB
-        // This is necessary with Java 5 (or older)
-        // Java6 (or newer) automatically find the appropriate driver.
-        // If you use Java> 5, then this line is not needed.
-        //Class.forName("com.mysql.jdbc.Driver");
-
-        String connectionURL = "jdbc:mysql://" + hostName + ":3306/" + dbName;
-
-            return DriverManager.getConnection(connectionURL, userName, password);
     }
 
 }
