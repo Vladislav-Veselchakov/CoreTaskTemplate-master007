@@ -18,7 +18,6 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        System.out.println("---------- VL: we're in HIBERNATE createUsersTable() ------------------");
         Session session = sessionfactory.openSession();
         session.beginTransaction();
         String sql = "CREATE TABLE IF NOT EXISTS User "
@@ -30,12 +29,10 @@ public class UserDaoHibernateImpl implements UserDao {
         session.createSQLQuery(sql).executeUpdate();
         session.getTransaction().commit();
         session.close();
-
     }
 
     @Override
     public void dropUsersTable() {
-        System.out.println("---------- VL: we're in HIBERNATE DROPtable() ------------------");
         Session session = sessionfactory.openSession();
         session.beginTransaction();
         String sql = "DROP TABLE IF EXISTS user";
@@ -46,21 +43,17 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        System.out.println("--------------- VL we're in saveUser(...) -------------------");
         User user = new User(name, lastName, age);
         Session session = sessionfactory.openSession();
         Transaction tx1 = session.beginTransaction();
         session.save(user);
         tx1.commit();
         session.close();
-
     }
 
     @Override
     public void removeUserById(long id) {
-        System.out.println("---------------------- VL we are in removeUserById() -------------------------");
         User user = null;
-
         Session session = sessionfactory.openSession();
         Transaction tx1 = session.beginTransaction();
         user = (User) session.get(User.class, id);
@@ -71,14 +64,12 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        System.out.println("---------- VL we're in getAllUsers() -------------------------");
-        List<User> users = (List<User>)  sessionfactory.openSession().createQuery("From User").list();
+        List<User> users = sessionfactory.openSession().createQuery("From User").list();
         return users;
     }
 
     @Override
     public void cleanUsersTable() {
-        System.out.println("---------- VL we're in cleanUsersTable() ------------");
         Session session = sessionfactory.openSession();
         Transaction tx1 = session.beginTransaction();
         session.createQuery("DELETE FROM User").executeUpdate();

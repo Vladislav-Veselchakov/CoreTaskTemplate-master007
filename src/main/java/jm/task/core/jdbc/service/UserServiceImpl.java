@@ -16,8 +16,8 @@ public class UserServiceImpl implements UserService {
     UserDao userDao;
 
     public UserServiceImpl() {
-        userDao = new UserDaoJDBCImpl();
-//        userDao = new UserDaoHibernateImpl();
+        //userDao = new UserDaoJDBCImpl();
+        userDao = new UserDaoHibernateImpl();
     }
 
     public void createUsersTable() {
@@ -47,17 +47,3 @@ public class UserServiceImpl implements UserService {
 
 }
 
-/** to fix:
-
-1.      113 Добавить транзакции в JDBC
-2.      Убрать все sout
-3.      Использовать PreparedStatment где необходимо
-4.      Удалить из Dao getMysqlConnection метод
-5.      @Table обязательно ли?
-6.      Переопределить equals hashcode в модели
-7.      Добавить rollback
-8.      По усмотрению try with resources openSesson
-9.      getAllUsers убрать приведение типов
-10.     UserServiceImpl использовать UserDao
-
-*/

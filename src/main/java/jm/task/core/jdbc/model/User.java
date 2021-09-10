@@ -62,4 +62,28 @@ public class User {
     public void setAge(Byte age) {
         this.age = age;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime*result + ((name == null)? 0 : (name.getBytes().length<=0)? 0 : (name.getBytes())[0]);
+        result = prime*result + ((lastName == null)? 0 : (lastName.getBytes().length<=0)? 0 : (lastName.getBytes())[0]);
+        result = result + (int) Math.sin(age) + 100;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+        User outUser = (User) obj;
+        if (name.compareTo(outUser.name)==0 && lastName.compareTo(outUser.lastName) == 0 && age == outUser.age) {
+            return true;
+        }
+        return false;
+    }
 }
